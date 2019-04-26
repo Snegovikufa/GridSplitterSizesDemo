@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridSplitterSizesDemo", "WpfApp8\GridSplitterSizesDemo.csproj", "{714F3D37-E038-4C67-B5C0-F5D12B1AEF74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridSplitterSizesDemo", "GridSplitterSizesDemo\GridSplitterSizesDemo.csproj", "{714F3D37-E038-4C67-B5C0-F5D12B1AEF74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
