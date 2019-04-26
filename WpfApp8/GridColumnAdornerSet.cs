@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace WpfApp8
+namespace GridSplitterSizesDemo
 {
-    public class GridRowColumnAdornerSet
+    internal class GridColumnAdornerSet
     {
-        #region Поля и свойства
+        private GridColumnWidthAdorner[] _adorners;
 
-        private GridColumnWidthAdorner _leftAdorner;
-        private GridColumnWidthAdorner _rightAdorner;
+        public GridColumnAdornerSet(GridSplitter gridSplitter)
+        {
+            GridSplitter = gridSplitter;
+            RefreshGridInformation();
+        }
 
         private IList<ColumnDefinition> ColumnDefinitions { get; set; }
 
@@ -23,18 +25,13 @@ namespace WpfApp8
         private Grid GridElement { get; set; }
         private GridSplitter GridSplitter { get; }
 
-        #endregion
-
-        #region Методы
-
         private void RefreshGridInformation()
         {
-            GridElement = GridSplitter.GetVisualAncestor<Grid>(null);
+            GridElement = GridSplitter.GetVisualAncestor<Grid>();
 
             if (GridElement != null)
             {
                 ColumnDefinitions = GridElement.ColumnDefinitions;
-
 
                 GridSplitter.DragStarted += GridSplitterOnDragStartedHandler;
                 GridSplitter.DragDelta += GridSplitterOnDragDeltaHandler;
@@ -48,15 +45,14 @@ namespace WpfApp8
 
         private void GridSplitterOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
-
             UpdateAdornersPositions();
         }
 
         private void UpdateAdornersPositions()
         {
             var pos = Mouse.GetPosition(GridElement);
-            _leftAdorner.RefreshPosition(pos);
-            _rightAdorner.RefreshPosition(pos);
+
+            foreach (var adorner in _adorners) adorner.SetPosition(pos);
         }
 
         private void GridSplitterOnDragCompletedHandler(object sender, DragCompletedEventArgs e)
@@ -66,8 +62,7 @@ namespace WpfApp8
 
         private void HideColumnsAdorners()
         {
-            _leftAdorner.DeleteFromLayer();
-            _rightAdorner.DeleteFromLayer();
+            foreach (var adorner in _adorners) adorner.DeleteFromLayer();
         }
 
         private void GridSplitterOnDragStartedHandler(object sender, DragStartedEventArgs e)
@@ -85,27 +80,24 @@ namespace WpfApp8
         {
             if (Columns > 1)
             {
-                int column = (int)GridSplitter.GetValue(Grid.ColumnProperty);
-                int leftColumn = column - 1;
-                int rightColumn = column + 1;
+                var column = (int) GridSplitter.GetValue(Grid.ColumnProperty);
+
+                // not all cases
+                var leftColumn = GridSplitter.ResizeBehavior == GridResizeBehavior.PreviousAndNext
+                    ? column - 1
+                    : column;
+                var rightColumn = GridSplitter.ResizeBehavior == GridResizeBehavior.PreviousAndCurrent
+                    ? column
+                    : column + 1;
 
                 var root = GridElement.FindRoot();
 
-                _leftAdorner = new GridColumnWidthAdorner(root, ColumnDefinitions[leftColumn], -50);
-                _rightAdorner = new GridColumnWidthAdorner(root, ColumnDefinitions[rightColumn], +30);
+                _adorners = new[]
+                {
+                    new GridColumnWidthAdorner(root, GridElement, ColumnDefinitions[leftColumn], -50),
+                    new GridColumnWidthAdorner(root, GridElement, ColumnDefinitions[rightColumn], +30)
+                };
             }
         }
-
-        #endregion
-
-        #region Конструкторы
-
-        public GridRowColumnAdornerSet(GridSplitter gridSplitter)
-        {
-            GridSplitter = gridSplitter;
-            RefreshGridInformation();
-        }
-
-        #endregion
     }
 }

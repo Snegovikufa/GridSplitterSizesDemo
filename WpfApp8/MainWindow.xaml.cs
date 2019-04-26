@@ -1,33 +1,15 @@
-﻿using System.Windows;
-using System.Windows.Documents;
-
-namespace WpfApp8
+﻿namespace GridSplitterSizesDemo
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        #region Поля и свойства
-
-        private GridRowColumnAdornerSet _set;
-        private SimpleCircleAdorner _simpleCircleAdorner;
-
-        #endregion
-
-        #region Конструкторы
+        private GridColumnAdornerSet _set1;
+        private GridColumnAdornerSet _set2;
 
         public MainWindow()
         {
             InitializeComponent();
-
-            _set = new GridRowColumnAdornerSet(GridSplitter);
-
-           // _simpleCircleAdorner = new SimpleCircleAdorner(Grid);
-           //var layer =  AdornerLayer.GetAdornerLayer(Grid);
-           //layer.Add(_simpleCircleAdorner);
+            _set1 = new GridColumnAdornerSet(GridSplitter1);
+            _set2 = new GridColumnAdornerSet(GridSplitter2);
         }
-
-        #endregion
     }
 }
